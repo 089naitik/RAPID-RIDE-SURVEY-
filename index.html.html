@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RapidRide — User Needs Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green-50: #eaf3de; --green-100: #c0dd97; --green-200: #97c459;
+    --green-500: #4a8a18; --green-700: #27500a; --green-900: #173404;
+    --neutral-50: #f8f7f4; --neutral-100: #eeecea; --neutral-200: #d8d6d0;
+    --neutral-400: #888780; --neutral-600: #5f5e5a; --neutral-900: #1c1c1a;
+    --white: #ffffff;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--neutral-50); color: var(--neutral-900); min-height: 100vh; padding-bottom: 80px; }
+  .header-banner { background: var(--green-700); position: relative; overflow: hidden; }
+  .header-banner::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255,255,255,0.025) 20px, rgba(255,255,255,0.025) 40px); }
+  .header-inner { max-width: 720px; margin: 0 auto; padding: 48px 24px 40px; position: relative; z-index: 1; }
+  .brand-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; padding: 6px 14px 6px 10px; margin-bottom: 20px; }
+  .brand-pill .dot { width: 20px; height: 20px; background: var(--green-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .brand-pill .dot::after { content: ''; width: 8px; height: 8px; background: var(--green-700); border-radius: 50%; }
+  .brand-pill span { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9); letter-spacing: 0.04em; }
+  .header-inner h1 { font-family: 'Syne', sans-serif; font-size: clamp(26px, 5vw, 38px); font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 14px; letter-spacing: -0.02em; }
+  .header-inner p { font-size: 15px; color: rgba(255,255,255,0.72); line-height: 1.65; max-width: 520px; }
+  .header-meta { display: flex; gap: 20px; margin-top: 24px; flex-wrap: wrap; }
+  .meta-chip { font-size: 12px; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 5px; }
+  .progress-bar-wrap { background: rgba(255,255,255,0.12); height: 3px; border-radius: 2px; margin-top: 28px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--green-200); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+  .form-container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+  .section-label { display: flex; align-items: center; gap: 10px; margin: 36px 0 16px; }
+  .section-label .section-num { width: 28px; height: 28px; background: var(--green-500); color: #fff; border-radius: 50%; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section-label h2 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green-500); }
+  .q-card { background: var(--white); border: 1px solid var(--neutral-200); border-radius: 16px; padding: 24px 28px; margin-bottom: 12px; transition: border-color 0.2s, box-shadow 0.2s; }
+  .q-card:focus-within { border-color: var(--green-200); box-shadow: 0 0 0 3px rgba(151,196,89,0.15); }
+  .q-label { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; color: var(--neutral-900); line-height: 1.45; margin-bottom: 6px; display: block; }
+  .q-sub { font-size: 13px; color: var(--neutral-400); margin-bottom: 18px; line-height: 1.5; }
+  .required { color: #d85a30; margin-left: 2px; }
+  .options-list { display: flex; flex-direction: column; gap: 8px; }
+  .opt-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border: 1px solid var(--neutral-200); border-radius: 10px; cursor: pointer; transition: background 0.15s, border-color 0.15s; user-select: none; }
+  .opt-item:hover { background: var(--neutral-50); border-color: var(--neutral-400); }
+  .opt-item input[type="radio"], .opt-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--green-500); cursor: pointer; flex-shrink: 0; }
+  .opt-item label { font-size: 14px; color: var(--neutral-900); cursor: pointer; flex: 1; }
+  .opt-item.selected { background: var(--green-50); border-color: var(--green-200); }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+  .scale-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--neutral-400); padding: 0 2px; }
+  .scale-btns { display: flex; gap: 6px; }
+  .scale-btn { flex: 1; height: 40px; border: 1px solid var(--neutral-200); border-radius: 8px; background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--neutral-600); cursor: pointer; transition: all 0.15s; }
+  .scale-btn:hover { background: var(--green-50); border-color: var(--green-200); }
+  .scale-btn.active { background: var(--green-500); border-color: var(--green-500); color: #fff; }
+  .text-input, .textarea-input, .select-input { width: 100%; padding: 11px 14px; border: 1px solid var(--neutral-200); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--neutral-900); background: var(--white); transition: border-color 0.15s, box-shadow 0.15s; outline: none; -webkit-appearance: none; }
+  .text-input:focus, .textarea-input:focus, .select-input:focus { border-color: var(--green-200); box-shadow: 0 0 0 3px rgba(151,196,89,0.15); }
+  .textarea-input { resize: vertical; min-height: 90px; line-height: 1.55; }
+  .emoji-scale { display: flex; gap: 8px; flex-wrap: wrap; }
+  .emoji-btn { flex: 1; min-width: 52px; border: 1px solid var(--neutral-200); border-radius: 10px; background: var(--white); padding: 10px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.15s; font-size: 20px; }
+  .emoji-btn span.lbl { font-size: 10px; color: var(--neutral-400); font-family: 'DM Sans', sans-serif; }
+  .emoji-btn:hover { border-color: var(--green-200); background: var(--green-50); }
+  .emoji-btn.active { border-color: var(--green-500); background: var(--green-50); box-shadow: 0 0 0 2px rgba(74,138,24,0.2); }
+  .submit-wrap { margin-top: 32px; text-align: center; }
+  .submit-btn { background: var(--green-700); color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; padding: 16px 48px; border: none; border-radius: 100px; cursor: pointer; transition: background 0.2s, transform 0.15s; letter-spacing: 0.02em; }
+  .submit-btn:hover:not(:disabled) { background: var(--green-500); transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .submit-note { font-size: 12px; color: var(--neutral-400); margin-top: 10px; }
+  .sending-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--neutral-900); color: #fff; padding: 12px 20px; border-radius: 100px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }
+  .sending-toast.visible { transform: translateX(-50%) translateY(0); }
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .thankyou-screen { display: none; max-width: 720px; margin: 0 auto; padding: 64px 24px; text-align: center; }
+  .thankyou-screen.visible { display: block; }
+  .ty-icon { width: 72px; height: 72px; background: var(--green-50); border: 2px solid var(--green-200); border-radius: 50%; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; }
+  .thankyou-screen h2 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--neutral-900); margin-bottom: 12px; letter-spacing: -0.02em; }
+  .thankyou-screen p { font-size: 15px; color: var(--neutral-600); line-height: 1.65; max-width: 400px; margin: 0 auto; }
+  .ty-sheet-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; background: var(--green-50); border: 1px solid var(--green-200); border-radius: 100px; padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--green-700); text-decoration: none; }
+  .ty-link { display: inline-block; margin-top: 12px; font-size: 13px; color: var(--neutral-400); text-decoration: underline; }
+  .form-main.hidden { display: none; }
+  .setup-banner { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 14px 18px; margin: 20px 0 4px; display: flex; gap: 12px; align-items: flex-start; }
+  .setup-banner .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .setup-banner p { font-size: 13px; color: #92400e; line-height: 1.55; }
+  .setup-banner code { background: rgba(0,0,0,0.07); border-radius: 4px; padding: 1px 5px; font-size: 12px; font-family: monospace; }
+</style>
+</head>
+<body>
+<div class="header-banner">
+  <div class="header-inner">
+    <div class="brand-pill"><div class="dot"></div><span>RapidRide</span></div>
+    <h1>Help us build smarter<br>commutes for everyone</h1>
+    <p>Your feedback shapes the future of RapidRide. This 3-minute survey helps us understand how to best serve employees and companies using our carpooling platform.</p>
+    <div class="header-meta">
+      <span class="meta-chip"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg> ~3 minutes</span>
+      <span class="meta-chip"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 3H3a1 1 0 00-1 1v8a1 1 0 001 1h10a1 1 0 001-1V4a1 1 0 00-1-1z" stroke="white" stroke-width="1.5"/><path d="M5 6h6M5 9h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg> 10 questions</span>
+      <span class="meta-chip"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 100 8 4 4 0 000-8zM2 14c0-2.21 2.686-4 6-4s6 1.79 6 4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg> Anonymous &amp; optional</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<div class="form-main" id="formMain">
+  <div class="form-container">
+    <div class="setup-banner" id="setupBanner">
+      <span class="icon">⚙️</span>
+      <p><strong>Setup needed:</strong> Replace <code>YOUR_APPS_SCRIPT_URL</code> in the script below with your deployed Apps Script Web App URL. See the included <strong>Code.gs</strong> file for step-by-step instructions.</p>
+    </div>
+
+    <div class="section-label"><div class="section-num">1</div><h2>About you</h2></div>
+
+    <div class="q-card">
+      <span class="q-label">What best describes your role? <span class="required">*</span></span>
+      <p class="q-sub">Select the option that most closely fits your relationship with workplace commuting.</p>
+      <div class="options-list" id="q1">
+        <div class="opt-item" onclick="selectRadio('q1',0)"><input type="radio" name="q1" id="q1_0"><label for="q1_0">Employee — I commute to an office or workplace</label></div>
+        <div class="opt-item" onclick="selectRadio('q1',1)"><input type="radio" name="q1" id="q1_1"><label for="q1_1">HR / Admin — I manage commute programs at my company</label></div>
+        <div class="opt-item" onclick="selectRadio('q1',2)"><input type="radio" name="q1" id="q1_2"><label for="q1_2">Driver — I'm interested in offering rides to colleagues</label></div>
+        <div class="opt-item" onclick="selectRadio('q1',3)"><input type="radio" name="q1" id="q1_3"><label for="q1_3">Decision maker — I evaluate tools/services for my organization</label></div>
+        <div class="opt-item" onclick="selectRadio('q1',4)"><input type="radio" name="q1" id="q1_4"><label for="q1_4">Other</label></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-label">How do you currently commute to work? <span class="required">*</span></span>
+      <p class="q-sub">Select all that apply.</p>
+      <div class="options-grid" id="q2">
+        <div class="opt-item" onclick="toggleCheck('q2',0)"><input type="checkbox" id="q2_0"><label for="q2_0">Personal car (solo)</label></div>
+        <div class="opt-item" onclick="toggleCheck('q2',1)"><input type="checkbox" id="q2_1"><label for="q2_1">Carpool / rideshare</label></div>
+        <div class="opt-item" onclick="toggleCheck('q2',2)"><input type="checkbox" id="q2_2"><label for="q2_2">Public transport</label></div>
+        <div class="opt-item" onclick="toggleCheck('q2',3)"><input type="checkbox" id="q2_3"><label for="q2_3">Company shuttle</label></div>
+        <div class="opt-item" onclick="toggleCheck('q2',4)"><input type="checkbox" id="q2_4"><label for="q2_4">Bicycle / walk</label></div>
+        <div class="opt-item" onclick="toggleCheck('q2',5)"><input type="checkbox" id="q2_5"><label for="q2_5">Work from home</label></div>
+      </div>
+    </div>
+
+    <div class="section-label"><div class="section-num">2</div><h2>Commute pain points</h2></div>
+
+    <div class="q-card">
+      <span class="q-label">What are your biggest frustrations with your current commute? <span class="required">*</span></span>
+      <p class="q-sub">Select all that apply.</p>
+      <div class="options-list" id="q3">
+        <div class="opt-item" onclick="toggleCheck('q3',0)"><input type="checkbox" id="q3_0"><label for="q3_0">High fuel / transport cost</label></div>
+        <div class="opt-item" onclick="toggleCheck('q3',1)"><input type="checkbox" id="q3_1"><label for="q3_1">Long commute time</label></div>
+        <div class="opt-item" onclick="toggleCheck('q3',2)"><input type="checkbox" id="q3_2"><label for="q3_2">Unreliable schedules</label></div>
+        <div class="opt-item" onclick="toggleCheck('q3',3)"><input type="checkbox" id="q3_3"><label for="q3_3">Safety concerns</label></div>
+        <div class="opt-item" onclick="toggleCheck('q3',4)"><input type="checkbox" id="q3_4"><label for="q3_4">Parking shortages at the office</label></div>
+        <div class="opt-item" onclick="toggleCheck('q3',5)"><input type="checkbox" id="q3_5"><label for="q3_5">Environmental guilt about solo driving</label></div>
+        <div class="opt-item" onclick="toggleCheck('q3',6)"><input type="checkbox" id="q3_6"><label for="q3_6">No good alternatives available</label></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-label">How much do you currently spend on commuting per month?</span>
+      <p class="q-sub">Approximate figure is fine.</p>
+      <select class="select-input" id="q4" onchange="updateProgress()">
+        <option value="">— Select a range —</option>
+        <option>Under ₹500</option>
+        <option>₹500 – ₹2,000</option>
+        <option>₹2,000 – ₹5,000</option>
+        <option>₹5,000 – ₹10,000</option>
+        <option>Over ₹10,000</option>
+        <option>I don't pay (company-provided transport)</option>
+      </select>
+    </div>
+
+    <div class="section-label"><div class="section-num">3</div><h2>Features &amp; priorities</h2></div>
+
+    <div class="q-card">
+      <span class="q-label">Which features would be most important to you? <span class="required">*</span></span>
+      <p class="q-sub">Select your top 3.</p>
+      <div class="options-list" id="q5">
+        <div class="opt-item" onclick="toggleCheckMax('q5',0,3)"><input type="checkbox" id="q5_0"><label for="q5_0">Real-time ride tracking &amp; live ETAs</label></div>
+        <div class="opt-item" onclick="toggleCheckMax('q5',1,3)"><input type="checkbox" id="q5_1"><label for="q5_1">Verified employee-only access</label></div>
+        <div class="opt-item" onclick="toggleCheckMax('q5',2,3)"><input type="checkbox" id="q5_2"><label for="q5_2">Flexible pick-up/drop-off points</label></div>
+        <div class="opt-item" onclick="toggleCheckMax('q5',3,3)"><input type="checkbox" id="q5_3"><label for="q5_3">Cost-splitting &amp; payment in-app</label></div>
+        <div class="opt-item" onclick="toggleCheckMax('q5',4,3)"><input type="checkbox" id="q5_4"><label for="q5_4">Recurring ride scheduling</label></div>
+        <div class="opt-item" onclick="toggleCheckMax('q5',5,3)"><input type="checkbox" id="q5_5"><label for="q5_5">Driver &amp; rider ratings / reviews</label></div>
+        <div class="opt-item" onclick="toggleCheckMax('q5',6,3)"><input type="checkbox" id="q5_6"><label for="q5_6">Carbon footprint tracking</label></div>
+        <div class="opt-item" onclick="toggleCheckMax('q5',7,3)"><input type="checkbox" id="q5_7"><label for="q5_7">HR / admin dashboard for companies</label></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-label">How important is safety verification when sharing a ride with a colleague? <span class="required">*</span></span>
+      <div class="scale-wrap" style="margin-top:14px;">
+        <div class="scale-labels"><span>Not important</span><span>Extremely important</span></div>
+        <div class="scale-btns" id="q6">
+          <button class="scale-btn" onclick="selectScale('q6',1)">1</button>
+          <button class="scale-btn" onclick="selectScale('q6',2)">2</button>
+          <button class="scale-btn" onclick="selectScale('q6',3)">3</button>
+          <button class="scale-btn" onclick="selectScale('q6',4)">4</button>
+          <button class="scale-btn" onclick="selectScale('q6',5)">5</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label"><div class="section-num">4</div><h2>Platform &amp; experience</h2></div>
+
+    <div class="q-card">
+      <span class="q-label">Where would you prefer to use RapidRide?</span>
+      <p class="q-sub">Select all platforms you'd actively use.</p>
+      <div class="options-grid" id="q7">
+        <div class="opt-item" onclick="toggleCheck('q7',0)"><input type="checkbox" id="q7_0"><label for="q7_0">Mobile app (iOS)</label></div>
+        <div class="opt-item" onclick="toggleCheck('q7',1)"><input type="checkbox" id="q7_1"><label for="q7_1">Mobile app (Android)</label></div>
+        <div class="opt-item" onclick="toggleCheck('q7',2)"><input type="checkbox" id="q7_2"><label for="q7_2">Web browser (desktop)</label></div>
+        <div class="opt-item" onclick="toggleCheck('q7',3)"><input type="checkbox" id="q7_3"><label for="q7_3">WhatsApp / Slack integration</label></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-label">Overall, how likely are you to use or recommend RapidRide? <span class="required">*</span></span>
+      <p class="q-sub">Be honest — your feedback makes us better.</p>
+      <div class="emoji-scale" id="q8" style="margin-top:14px;">
+        <button class="emoji-btn" onclick="selectEmoji('q8',0)">😞<span class="lbl">Very unlikely</span></button>
+        <button class="emoji-btn" onclick="selectEmoji('q8',1)">😐<span class="lbl">Unlikely</span></button>
+        <button class="emoji-btn" onclick="selectEmoji('q8',2)">🙂<span class="lbl">Maybe</span></button>
+        <button class="emoji-btn" onclick="selectEmoji('q8',3)">😊<span class="lbl">Likely</span></button>
+        <button class="emoji-btn" onclick="selectEmoji('q8',4)">🚀<span class="lbl">Definitely!</span></button>
+      </div>
+    </div>
+
+    <div class="section-label"><div class="section-num">5</div><h2>Your voice</h2></div>
+
+    <div class="q-card">
+      <span class="q-label">What would make you switch to a carpooling solution?</span>
+      <p class="q-sub">Tell us what would genuinely move the needle for you.</p>
+      <textarea class="textarea-input" id="q9" placeholder="e.g. If fuel savings were significant and the app was reliable…" oninput="updateProgress()"></textarea>
+    </div>
+
+    <div class="q-card">
+      <span class="q-label">Any other feedback, feature ideas, or concerns?</span>
+      <p class="q-sub">The floor is yours.</p>
+      <textarea class="textarea-input" id="q10" placeholder="Share anything on your mind…" oninput="updateProgress()"></textarea>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()">Submit my feedback →</button>
+      <p class="submit-note">Responses are saved to a private Google Sheet. Anonymous &amp; secure.</p>
+    </div>
+    <div style="height:48px;"></div>
+  </div>
+</div>
+
+<div class="sending-toast" id="sendingToast">
+  <div class="spinner"></div>
+  Saving your response to Google Sheets…
+</div>
+
+<div class="thankyou-screen" id="thankyouScreen">
+  <div class="ty-icon">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#27500a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <h2>Response saved!</h2>
+  <p>Your insights have been recorded in Google Sheets and will directly shape how RapidRide evolves.</p>
+  <a href="#" class="ty-sheet-link" id="sheetLink" target="_blank">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="#27500a" stroke-width="1.5"/><path d="M3 9h18M9 9v12" stroke="#27500a" stroke-width="1.5"/></svg>
+    View responses in Google Sheets
+  </a><br>
+  <a href="https://rapidride-eta.vercel.app/" class="ty-link" target="_blank">Back to RapidRide →</a>
+</div>
+
+<script>
+  // ════════════════════════════════════════════════════════════
+  //  STEP 1: Replace with your Apps Script Web App URL
+  // ════════════════════════════════════════════════════════════
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywFCamQp_J0lj_xsXftprt3vcQCzIjlgas3qOwIj7onD8dYlVkSGgHlEwi5Dl1A/exec";
+
+  var SHEET_URL = "https://docs.google.com/spreadsheets/d/1IkmlrjXdLck_vD_PYU_lmBdLwFSflwryYirbQY0OvzY/edit?usp=sharing";
+
+  // Hide setup banner — URLs are configured
+  var b = document.getElementById("setupBanner");
+  if (b) b.style.display = "none";
+
+  function selectRadio(g, i) {
+    var c = document.getElementById(g);
+    c.querySelectorAll('.opt-item').forEach(function(x){x.classList.remove('selected');});
+    c.querySelectorAll('input[type="radio"]').forEach(function(x){x.checked=false;});
+    c.querySelectorAll('.opt-item')[i].classList.add('selected');
+    c.querySelectorAll('input[type="radio"]')[i].checked = true;
+    updateProgress();
+  }
+  function toggleCheck(g, i) {
+    var c = document.getElementById(g);
+    var inp = c.querySelectorAll('.opt-item')[i].querySelector('input');
+    inp.checked = !inp.checked;
+    c.querySelectorAll('.opt-item')[i].classList.toggle('selected', inp.checked);
+    updateProgress();
+  }
+  function toggleCheckMax(g, i, max) {
+    var c = document.getElementById(g);
+    var inp = c.querySelectorAll('.opt-item')[i].querySelector('input');
+    if (!inp.checked && c.querySelectorAll('input:checked').length >= max) return;
+    inp.checked = !inp.checked;
+    c.querySelectorAll('.opt-item')[i].classList.toggle('selected', inp.checked);
+    updateProgress();
+  }
+  function selectScale(g, v) {
+    document.getElementById(g).querySelectorAll('.scale-btn').forEach(function(b,i){b.classList.toggle('active',i+1===v);});
+    updateProgress();
+  }
+  function selectEmoji(g, idx) {
+    document.getElementById(g).querySelectorAll('.emoji-btn').forEach(function(b,i){b.classList.toggle('active',i===idx);});
+    updateProgress();
+  }
+  function updateProgress() {
+    var filled = 0;
+    document.querySelectorAll('.q-card').forEach(function(card){
+      if (card.querySelector('input:checked') || card.querySelector('.active') ||
+          (card.querySelector('select') && card.querySelector('select').value) ||
+          (card.querySelector('textarea') && card.querySelector('textarea').value.trim())) filled++;
+    });
+    document.getElementById('progressFill').style.width = Math.round(filled/10*100)+'%';
+  }
+  function getChecked(g) {
+    var labels = [];
+    document.getElementById(g).querySelectorAll('input:checked').forEach(function(inp){
+      if (inp.nextElementSibling) labels.push(inp.nextElementSibling.textContent.trim());
+    });
+    return labels.join(', ');
+  }
+  function getRadio(g) {
+    var inp = document.querySelector('#'+g+' input:checked');
+    return inp && inp.nextElementSibling ? inp.nextElementSibling.textContent.trim() : '';
+  }
+  function getScale(g) {
+    var a = document.querySelector('#'+g+' .active');
+    return a ? a.textContent.trim() : '';
+  }
+  function getEmoji(g) {
+    var result = '';
+    document.getElementById(g).querySelectorAll('.emoji-btn').forEach(function(b){
+      if (b.classList.contains('active')) result = b.querySelector('.lbl').textContent.trim();
+    });
+    return result;
+  }
+  function submitForm() {
+    if (!getRadio('q1'))  { alert('Please answer Q1: What best describes your role?'); return; }
+    if (!getChecked('q3')){ alert('Please answer Q3: Biggest commute frustrations?'); return; }
+    if (!getChecked('q5')){ alert('Please answer Q5: Which features matter most?'); return; }
+    if (!getScale('q6'))  { alert('Please answer Q6: Safety importance rating.'); return; }
+    if (!getEmoji('q8'))  { alert('Please answer Q8: Likelihood to recommend.'); return; }
+    if (APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL") {
+      alert('Setup required: Replace YOUR_APPS_SCRIPT_URL with your deployed Apps Script URL. See Code.gs for instructions.');
+      return;
+    }
+    var payload = {
+      q1: getRadio('q1'), q2: getChecked('q2'), q3: getChecked('q3'),
+      q4: document.getElementById('q4').value, q5: getChecked('q5'),
+      q6: getScale('q6'), q7: getChecked('q7'), q8: getEmoji('q8'),
+      q9: document.getElementById('q9').value.trim(),
+      q10: document.getElementById('q10').value.trim()
+    };
+    var toast = document.getElementById('sendingToast');
+    var btn = document.getElementById('submitBtn');
+    toast.classList.add('visible');
+    btn.disabled = true;
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function() {
+      toast.classList.remove('visible');
+      document.getElementById('progressFill').style.width = '100%';
+      var sl = document.getElementById('sheetLink');
+      if (SHEET_URL && SHEET_URL !== 'YOUR_GOOGLE_SHEET_URL') sl.href = SHEET_URL;
+      else sl.style.display = 'none';
+      setTimeout(function(){
+        document.getElementById('formMain').classList.add('hidden');
+        document.getElementById('thankyouScreen').classList.add('visible');
+        window.scrollTo({top:0, behavior:'smooth'});
+      }, 300);
+    }).catch(function(err){
+      toast.classList.remove('visible');
+      btn.disabled = false;
+      alert('Submission failed. Please check your connection.\n\nError: '+err.message);
+    });
+  }
+</script>
+</body>
+</html>
